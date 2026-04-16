@@ -238,6 +238,17 @@
       "ldesc": "Play the game of Tic Tac Toe with your friends with same screen multiplayer!",
       "symbol": "apps",
       "th": "#C6AA4F"
+    },
+    {
+      "name": "KJV Bible",
+      "src": "apps/bible.html",
+      "by": "BaptistMissionsOS",
+      "qt": "The Word of God",
+      "desc": "King James Version Bible with search",
+      "cat": "productivity",
+      "ldesc": "Read and search the King James Version of the Bible. Features book/chapter navigation and full-text search.",
+      "symbol": "menu_book",
+      "th": "#384AAE"
     }
   ]
 }

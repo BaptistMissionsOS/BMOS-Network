@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KJV Bible</title>
+    <meta name="capabilities" content="content_readonly">
+    <meta name="nova-include" content="nova.css material-symbols-rounded">
+    <meta name="permissions" content="">
+    <meta name="nova-icon" content="<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><path fill='currentColor' d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z'/></svg>">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-family, system-ui, -apple-system, sans-serif);
+            background: var(--col-bg1, #1a1a1a);
+            color: var(--col-txt1, #ffffff);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px;
+            background: var(--col-bg2, #252525);
+            border-bottom: 1px solid var(--col-bg3, #333333);
+        }
+
+        .header h1 {
+            font-size: 18px;
+            font-weight: 600;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-selectors {
+            display: flex;
+            gap: 8px;
+            padding: 12px 16px;
+            background: var(--col-bg2, #252525);
+            border-bottom: 1px solid var(--col-bg3, #333333);
+        }
+
+        select {
+            background: var(--col-bg3, #333333);
+            color: var(--col-txt1, #ffffff);
+            border: 1px solid var(--col-bg3, #333333);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            min-width: 120px;
+        }
+
+        select:focus {
+            outline: 2px solid var(--accent-color, #6179FF);
+        }
+
+        .content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            line-height: 1.8;
+        }
+
+        .verse {
+            margin-bottom: 12px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .verse-number {
+            color: var(--accent-color, #6179FF);
+            font-weight: 600;
+            min-width: 28px;
+            user-select: none;
+        }
+
+        .verse-text {
+            flex: 1;
+        }
+
+        .chapter-title {
+            font-size: 24px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid var(--col-bg3, #333333);
+            color: var(--accent-color, #6179FF);
+        }
+
+        .loading, .error {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            gap: 16px;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .loader {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--col-bg3, #333333);
+            border-top-color: var(--accent-color, #6179FF);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .error-icon {
+            font-size: 48px;
+            color: #ff6b6b;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 8px;
+            padding: 8px 16px;
+            background: var(--col-bg2, #252525);
+            border-bottom: 1px solid var(--col-bg3, #333333);
+        }
+
+        .search-box input {
+            flex: 1;
+            background: var(--col-bg3, #333333);
+            color: var(--col-txt1, #ffffff);
+            border: 1px solid var(--col-bg3, #333333);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .search-box input:focus {
+            outline: 2px solid var(--accent-color, #6179FF);
+        }
+
+        .search-box button {
+            background: var(--accent-color, #6179FF);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .search-box button:hover {
+            opacity: 0.9;
+        }
+
+        .search-results {
+            padding: 16px;
+        }
+
+        .search-result {
+            padding: 12px;
+            margin-bottom: 8px;
+            background: var(--col-bg2, #252525);
+            border-radius: 8px;
+            cursor: pointer;
+            border-left: 3px solid var(--accent-color, #6179FF);
+        }
+
+        .search-result:hover {
+            background: var(--col-bg3, #333333);
+        }
+
+        .search-result-ref {
+            font-weight: 600;
+            color: var(--accent-color, #6179FF);
+            margin-bottom: 4px;
+        }
+
+        .search-result-text {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .highlight {
+            background: rgba(97, 121, 255, 0.3);
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: var(--col-bg2, #252525);
+            border-top: 1px solid var(--col-bg3, #333333);
+        }
+
+        .nav-buttons button {
+            background: var(--col-bg3, #333333);
+            color: var(--col-txt1, #ffffff);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .nav-buttons button:hover {
+            background: var(--accent-color, #6179FF);
+        }
+
+        .nav-buttons button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1><span class="material-symbols-rounded">menu_book</span> KJV Bible</h1>
+    </div>
+
+    <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Search for a word or phrase...">
+        <button onclick="searchBible()"><span class="material-symbols-rounded">search</span> Search</button>
+        <button onclick="showReader()"><span class="material-symbols-rounded">book</span> Read</button>
+    </div>
+
+    <div class="nav-selectors" id="navSelectors">
+        <select id="bookSelect" onchange="loadChapters()">
+            <option value="">Select Book</option>
+        </select>
+        <select id="chapterSelect" onchange="loadChapter()">
+            <option value="">Select Chapter</option>
+        </select>
+    </div>
+
+    <div class="content" id="content">
+        <div class="loading">
+            <div class="loader"></div>
+            <p>Loading Bible...</p>
+        </div>
+    </div>
+
+    <div class="nav-buttons" id="navButtons">
+        <button onclick="previousChapter()" id="prevBtn"><span class="material-symbols-rounded">arrow_back</span> Previous</button>
+        <button onclick="nextChapter()" id="nextBtn">Next <span class="material-symbols-rounded">arrow_forward</span></button>
+    </div>
+
+    <script>
+        let bibleData = null;
+        let books = [];
+        let currentBook = 'Genesis';
+        let currentChapter = 1;
+
+        async function loadBible() {
+            try {
+                const response = await fetch('../../json/kjv.json');
+                if (!response.ok) throw new Error('Failed to load Bible data');
+                const rawData = await response.json();
+                
+                // Convert array format to object format for easier access
+                bibleData = {};
+                rawData.forEach(book => {
+                    bibleData[book.book] = {};
+                    book.chapters.forEach(chapter => {
+                        bibleData[book.book][chapter.chapter] = chapter.verses;
+                    });
+                });
+                
+                books = Object.keys(bibleData);
+                populateBooks();
+                loadChapter();
+            } catch (error) {
+                showError('Failed to load Bible data. Please try again.');
+                console.error('Error loading Bible:', error);
+            }
+        }
+
+        function showError(message) {
+            document.getElementById('content').innerHTML = `
+                <div class="error">
+                    <span class="material-symbols-rounded error-icon">error</span>
+                    <p>${message}</p>
+                </div>
+            `;
+        }
+
+        function populateBooks() {
+            const select = document.getElementById('bookSelect');
+            select.innerHTML = '<option value="">Select Book</option>';
+            books.forEach(book => {
+                const option = document.createElement('option');
+                option.value = book;
+                option.textContent = book;
+                select.appendChild(option);
+            });
+        }
+
+        function loadChapters() {
+            const book = document.getElementById('bookSelect').value;
+            if (!book) return;
+
+            const chapters = Object.keys(bibleData[book]);
+            const select = document.getElementById('chapterSelect');
+            select.innerHTML = '<option value="">Select Chapter</option>';
+            chapters.forEach(chapter => {
+                const option = document.createElement('option');
+                option.value = chapter;
+                option.textContent = `Chapter ${chapter}`;
+                select.appendChild(option);
+            });
+
+            currentBook = book;
+            currentChapter = 1;
+            select.value = '1';
+            loadChapter();
+        }
+
+        function loadChapter() {
+            const bookSelect = document.getElementById('bookSelect');
+            const chapterSelect = document.getElementById('chapterSelect');
+            
+            if (bookSelect.value) currentBook = bookSelect.value;
+            if (chapterSelect.value) currentChapter = parseInt(chapterSelect.value);
+
+            if (!bibleData[currentBook]) return;
+
+            const chapterData = bibleData[currentBook][currentChapter];
+            if (!chapterData) return;
+
+            bookSelect.value = currentBook;
+            if (chapterSelect.value !== String(currentChapter)) {
+                chapterSelect.value = currentChapter;
+            }
+
+            let html = `<div class="chapter-title">${currentBook} ${currentChapter}</div>`;
+            
+            chapterData.forEach(verse => {
+                html += `
+                    <div class="verse">
+                        <span class="verse-number">${verse.verse}</span>
+                        <span class="verse-text">${verse.text}</span>
+                    </div>
+                `;
+            });
+
+            document.getElementById('content').innerHTML = html;
+            document.getElementById('content').scrollTop = 0;
+            
+            updateNavButtons();
+        }
+
+        function updateNavButtons() {
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+
+            prevBtn.disabled = currentBook === books[0] && currentChapter === 1;
+            
+            const lastBook = books[books.length - 1];
+            const lastChapter = Object.keys(bibleData[lastBook]).length;
+            nextBtn.disabled = currentBook === lastBook && currentChapter === lastChapter;
+        }
+
+        function previousChapter() {
+            if (currentChapter > 1) {
+                currentChapter--;
+            } else {
+                const bookIndex = books.indexOf(currentBook);
+                if (bookIndex > 0) {
+                    currentBook = books[bookIndex - 1];
+                    currentChapter = Object.keys(bibleData[currentBook]).length;
+                }
+            }
+            document.getElementById('chapterSelect').value = currentChapter;
+            populateChapters();
+            loadChapter();
+        }
+
+        function nextChapter() {
+            const maxChapter = Object.keys(bibleData[currentBook]).length;
+            if (currentChapter < maxChapter) {
+                currentChapter++;
+            } else {
+                const bookIndex = books.indexOf(currentBook);
+                if (bookIndex < books.length - 1) {
+                    currentBook = books[bookIndex + 1];
+                    currentChapter = 1;
+                }
+            }
+            document.getElementById('chapterSelect').value = currentChapter;
+            populateChapters();
+            loadChapter();
+        }
+
+        function populateChapters() {
+            const book = currentBook;
+            const chapters = Object.keys(bibleData[book]);
+            const select = document.getElementById('chapterSelect');
+            select.innerHTML = '<option value="">Select Chapter</option>';
+            chapters.forEach(chapter => {
+                const option = document.createElement('option');
+                option.value = chapter;
+                option.textContent = `Chapter ${chapter}`;
+                select.appendChild(option);
+            });
+        }
+
+        function searchBible() {
+            const query = document.getElementById('searchInput').value.trim().toLowerCase();
+            if (!query) return;
+
+            const results = [];
+            books.forEach(book => {
+                Object.keys(bibleData[book]).forEach(chapter => {
+                    bibleData[book][chapter].forEach(verse => {
+                        if (verse.text.toLowerCase().includes(query)) {
+                            results.push({
+                                book: book,
+                                chapter: chapter,
+                                verse: verse.verse,
+                                text: verse.text
+                            });
+                        }
+                    });
+                });
+            });
+
+            displaySearchResults(results, query);
+        }
+
+        function displaySearchResults(results, query) {
+            document.getElementById('navSelectors').style.display = 'none';
+            document.getElementById('navButtons').style.display = 'none';
+
+            if (results.length === 0) {
+                document.getElementById('content').innerHTML = `
+                    <div class="error">
+                        <span class="material-symbols-rounded error-icon">search_off</span>
+                        <p>No results found for "${query}"</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = `<div class="chapter-title">Search Results (${results.length})</div><div class="search-results">`;
+            
+            results.forEach(result => {
+                const highlightedText = result.text.replace(
+                    new RegExp(query, 'gi'),
+                    match => `<span class="highlight">${match}</span>`
+                );
+                html += `
+                    <div class="search-result" onclick="goToVerse('${result.book}', ${result.chapter})">
+                        <div class="search-result-ref">${result.book} ${result.chapter}:${result.verse}</div>
+                        <div class="search-result-text">${highlightedText}</div>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            document.getElementById('content').innerHTML = html;
+            document.getElementById('content').scrollTop = 0;
+        }
+
+        function goToVerse(book, chapter) {
+            currentBook = book;
+            currentChapter = chapter;
+            showReader();
+            populateChapters();
+            loadChapter();
+        }
+
+        function showReader() {
+            document.getElementById('navSelectors').style.display = 'flex';
+            document.getElementById('navButtons').style.display = 'flex';
+            populateBooks();
+            populateChapters();
+            loadChapter();
+        }
+
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') searchBible();
+        });
+
+        // NovaOS greenflag entry point
+        function greenflag() {
+            loadBible();
+        }
+
+        // Fallback for non-NovaOS contexts
+        if (typeof greenflag !== 'undefined' && !window.parent.location.href.includes('novaos')) {
+            greenflag();
+        }
+    </script>
+</body>
+</html>
