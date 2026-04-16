@@ -1,3 +1,24 @@
+# BMOS-Network
+
+A NovaOS-based web desktop operating system distributed over the peer-to-peer Hypercore protocol.
+
+## Access BMOS-Network
+
+### Step 1: Install Peersky Browser
+Download Peersky for your platform:
+- **macOS / Windows / Linux**: [peersky.p2plabs.xyz](https://peersky.p2plabs.xyz/)
+
+### Step 2: Open the Hypercore Link
+Launch Peersky and paste this address into the URL bar:
+
+```
+hyper://98h6k4dxoj7wb7jmmkq6qb8tbisjqxrczk1d5q8t5w4zxubcr4no/BMOS-Network/
+```
+
+> **Tip:** Bookmark the link for quick access. Content is served peer-to-peer—no central servers required.
+
+---
+
 <img height="55" src="https://github.com/user-attachments/assets/928feace-3086-413a-8376-2f131c3e2f91"/>
 
 # NovaOS
