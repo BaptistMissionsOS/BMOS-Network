@@ -271,7 +271,7 @@
 
         async function loadBible() {
             try {
-                const response = await fetch('../../json/kjv.json');
+                const response = await fetch(new URL('../json/kjv.json', window.parent.location.href).href);
                 if (!response.ok) throw new Error('Failed to load Bible data');
                 const rawData = await response.json();
                 
