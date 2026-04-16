@@ -1122,7 +1122,7 @@
 		function loadThemes() {
 			const container = document.getElementById("themeslist");
 
-			fetch(new URL('../assets/json/themes.json', window.parent.location.href).href)
+			fetch(new URL('assets/json/themes.json', window.parent.location.href).href)
 				.then(response => response.json())
 				.then(data => {
 					container.innerHTML = '';
@@ -1290,7 +1290,7 @@
 
 		async function installapp(x, appName, obj, method = "icononly") {
 			let prefixurl = "";
-			if (!x.src.startsWith("http")) prefixurl = new URL('../assets/store/', window.parent.location.href).href;
+			if (!x.src.startsWith("http")) prefixurl = new URL('assets/store/', window.parent.location.href).href;
 			try {
 				if (obj) {
 					if (method == "icononly") obj.innerText = "hourglass_top";
@@ -1352,7 +1352,7 @@
 
 
 		async function fetchAppData() {
-			return await fetch(new URL('../assets/json/store-v2.json', window.parent.location.href).href)
+			return await fetch(new URL('assets/json/store-v2.json', window.parent.location.href).href)
 				.then(response => {
 					if (!response.ok) throw new Error('Network response was not ok');
 					return response.json();
@@ -2077,7 +2077,7 @@
 			const resultsDiv = document.getElementById("searchOutputList");
 			resultsDiv.style.display = 'grid';
 			resultsDiv.innerHTML = "<div class='loader'></div>";
-			fetch(new URL('../assets/json/store-v2.json', window.parent.location.href).href)
+			fetch(new URL('assets/json/store-v2.json', window.parent.location.href).href)
 				.then(response => response.json())
 				.then(data => {
 					const threshold = 0.6;
