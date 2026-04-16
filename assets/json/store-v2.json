@@ -17,7 +17,7 @@
   "apps": [
     {
       "name": "Nova CLI",
-      "src": "/Nova-Store/apps/cli.html",
+      "src": "apps/cli.html",
       "by": "adthoughtsglobal",
       "qt": "Explore more inside",
       "desc": "System CLI for Nova OS",
@@ -29,7 +29,7 @@
     },
     {
       "name": "Chess",
-      "src": "/Nova-Store/apps/chess.html",
+      "src": "apps/chess.html",
       "by": "adthoughtsglobal",
       "qt": "Yo clear chess? Me don't 😭🥀",
       "desc": "Classic chess game with AI",
@@ -41,7 +41,7 @@
     },
     {
       "name": "Data manager",
-      "src": "/Nova-Store/apps/datamgr.html",
+      "src": "apps/datamgr.html",
       "by": "adthoughtsglobal",
       "qt": "Dig and replace",
       "desc": "Manage data in local storage",
@@ -53,7 +53,7 @@
     },
     {
       "name": "Rubix Timer",
-      "src": "/Nova-Store/apps/rubixtimer.html",
+      "src": "apps/rubixtimer.html",
       "by": "adthoughtsglobal",
       "qt": "Measure your scores",
       "desc": "Full Rubiks cube timer with scramble.",
@@ -65,7 +65,7 @@
     },
     {
       "name": "Owi Five",
-      "src": "/Nova-Store/apps/owifive.html",
+      "src": "apps/owifive.html",
       "by": "adthoughtsglobal",
       "qt": "Investigate that image",
       "desc": "A tool to dig in details and alter image contents.",
@@ -77,7 +77,7 @@
     },
     {
       "name": "Textame",
-      "src": "/Nova-Store/apps/textame.html",
+      "src": "apps/textame.html",
       "by": "adthoughtsglobal",
       "qt": "Explore more inside",
       "desc": "Create Text and html files",
@@ -89,7 +89,7 @@
     },
     {
       "name": "Artion",
-      "src": "/Nova-Store/apps/paintviz.html",
+      "src": "apps/paintviz.html",
       "by": "Vizronix",
       "qt": "Get creative",
       "desc": "A sophisticated web application for drawing",
@@ -101,7 +101,7 @@
     },
     {
       "name": "Ducks Quack",
-      "src": "/Nova-Store/apps/ducksquack.html",
+      "src": "apps/ducksquack.html",
       "by": "adthoughtsglobal",
       "qt": "Ensure Ducks Quack",
       "desc": "Pictures of ducks for all. To ensure global peace.",
@@ -113,7 +113,7 @@
     },
     {
       "name": "WCanvas2",
-      "src": "/Nova-Store/apps/WCanvas.html",
+      "src": "apps/WCanvas.html",
       "by": "adthoughtsglobal",
       "qt": "Create Anything.",
       "desc": "An full HTML, Python, OSL code editor.",
@@ -125,7 +125,7 @@
     },
     {
       "name": "Lizabot3",
-      "src": "/Nova-Store/apps/lizabot3.html",
+      "src": "apps/lizabot3.html",
       "by": "adthoughtsglobal",
       "qt": "A personal Chatbot",
       "desc": "A personal Chatbot that don't hallucinate",
@@ -137,7 +137,7 @@
     },
     {
       "name": "OriginOS Access",
-      "src": "/Nova-Store/apps/originAccess.html",
+      "src": "apps/originAccess.html",
       "by": "Mistium",
       "qt": "Run Origin OS",
       "desc": "The best GUI for OSL and OASM.",
@@ -161,7 +161,7 @@
     },
     {
       "name": "Dot Engine",
-      "src": "/Nova-Store/apps/dotengine.html",
+      "src": "apps/dotengine.html",
       "by": "adthoughtsglobal",
       "qt": "Mini beat maker",
       "desc": "Minimal beat editor tool with waveform editing.",
@@ -173,7 +173,7 @@
     },
     {
       "name": "JSON Editor",
-      "src": "/Nova-Store/apps/json.html",
+      "src": "apps/json.html",
       "by": "adthoughtsglobal",
       "qt": "Dive deeper in data",
       "desc": "Interactive and responsive editor for JSON files. Stable.",
@@ -184,7 +184,7 @@
     },
     {
       "name": "PDF Viewer",
-      "src": "/Nova-Store/apps/pdfviewer.html",
+      "src": "apps/pdfviewer.html",
       "by": "adthoughtsglobal",
       "qt": "Facts never die, PDFs too.",
       "desc": "View PDFs with ease.",
@@ -196,7 +196,7 @@
     },
     {
       "name": "Bad Things",
-      "src": "/Nova-Store/apps/badthings.html",
+      "src": "apps/badthings.html",
       "by": "adthoughtsglobal",
       "qt": "Things get bad.",
       "desc": "Interactive endless game where losing is fatal.",
@@ -208,7 +208,7 @@
     },
     {
       "name": "Minecraft Launcher",
-      "src": "/Nova-Store/apps/nvamine.html",
+      "src": "apps/nvamine.html",
       "by": "adthoughtsglobal",
       "qt": "Sculpt or destroy.",
       "desc": "Play minecraft clones",
@@ -219,7 +219,7 @@
     },
     {
       "name": "Obamafy",
-      "src": "/Nova-Store/apps/obamafy.html",
+      "src": "apps/obamafy.html",
       "by": "adthoughtsglobal",
       "qt": "obama",
       "desc": "If it exists, theres obama of it.",
@@ -230,7 +230,7 @@
     },
     {
       "name": "Tic Tac Toe",
-      "src": "/Nova-Store/apps/TicTacToe.html",
+      "src": "apps/TicTacToe.html",
       "by": "G-Progress",
       "qt": "Play offline",
       "desc": "The game Of TicTacToe.",
