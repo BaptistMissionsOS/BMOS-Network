@@ -7,7 +7,6 @@
     <meta name="capabilities" content="content_readonly">
     <meta name="nova-include" content="nova.css material-symbols-rounded">
     <meta name="permissions" content="fetch">
-    <meta name="nova-icon" content="<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'><path fill='currentColor' d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z'/></svg>">
     <style>
         * {
             box-sizing: border-box;
@@ -43,27 +42,61 @@
             gap: 8px;
         }
 
-        .nav-selectors {
+        .toolbar {
             display: flex;
-            gap: 8px;
-            padding: 12px 16px;
+            gap: 6px;
+            padding: 8px 12px;
             background: var(--col-bg2, #252525);
             border-bottom: 1px solid var(--col-bg3, #333333);
+            align-items: center;
         }
 
-        select {
+        .toolbar select {
             background: var(--col-bg3, #333333);
             color: var(--col-txt1, #ffffff);
             border: 1px solid var(--col-bg3, #333333);
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-size: 14px;
+            padding: 6px 8px;
+            border-radius: 6px;
+            font-size: 13px;
             cursor: pointer;
-            min-width: 120px;
+            min-width: 80px;
+            flex-shrink: 0;
         }
 
-        select:focus {
+        .toolbar select:focus {
             outline: 2px solid var(--accent-color, #6179FF);
+        }
+
+        .toolbar input {
+            flex: 1;
+            background: var(--col-bg3, #333333);
+            color: var(--col-txt1, #ffffff);
+            border: 1px solid var(--col-bg3, #333333);
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 13px;
+            min-width: 60px;
+        }
+
+        .toolbar input:focus {
+            outline: 2px solid var(--accent-color, #6179FF);
+        }
+
+        .toolbar button {
+            background: var(--accent-color, #6179FF);
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .toolbar button:hover {
+            opacity: 0.9;
         }
 
         .content {
@@ -129,43 +162,6 @@
             color: #ff6b6b;
         }
 
-        .search-box {
-            display: flex;
-            gap: 8px;
-            padding: 8px 16px;
-            background: var(--col-bg2, #252525);
-            border-bottom: 1px solid var(--col-bg3, #333333);
-        }
-
-        .search-box input {
-            flex: 1;
-            background: var(--col-bg3, #333333);
-            color: var(--col-txt1, #ffffff);
-            border: 1px solid var(--col-bg3, #333333);
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-size: 14px;
-        }
-
-        .search-box input:focus {
-            outline: 2px solid var(--accent-color, #6179FF);
-        }
-
-        .search-box button {
-            background: var(--accent-color, #6179FF);
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .search-box button:hover {
-            opacity: 0.9;
-        }
 
         .search-results {
             padding: 16px;
@@ -232,23 +228,17 @@
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1><span class="material-symbols-rounded">menu_book</span> KJV Bible</h1>
-    </div>
 
-    <div class="search-box">
-        <input type="text" id="searchInput" placeholder="Search for a word or phrase...">
-        <button onclick="searchBible()"><span class="material-symbols-rounded">search</span> Search</button>
-        <button onclick="showReader()"><span class="material-symbols-rounded">book</span> Read</button>
-    </div>
-
-    <div class="nav-selectors" id="navSelectors">
+    <div class="toolbar" id="toolbar">
         <select id="bookSelect" onchange="loadChapters()">
-            <option value="">Select Book</option>
+            <option value="">Book</option>
         </select>
         <select id="chapterSelect" onchange="loadChapter()">
-            <option value="">Select Chapter</option>
+            <option value="">Chapter</option>
         </select>
+        <input type="text" id="searchInput" placeholder="Search...">
+        <button onclick="searchBible()"><span class="material-symbols-rounded">search</span></button>
+        <button onclick="showReader()"><span class="material-symbols-rounded">book</span></button>
     </div>
 
     <div class="content" id="content">
@@ -446,7 +436,7 @@
         }
 
         function displaySearchResults(results, query) {
-            document.getElementById('navSelectors').style.display = 'none';
+            document.getElementById('toolbar').style.display = 'none';
             document.getElementById('navButtons').style.display = 'none';
 
             if (results.length === 0) {
@@ -488,7 +478,7 @@
         }
 
         function showReader() {
-            document.getElementById('navSelectors').style.display = 'flex';
+            document.getElementById('toolbar').style.display = 'flex';
             document.getElementById('navButtons').style.display = 'flex';
             populateBooks();
             populateChapters();
