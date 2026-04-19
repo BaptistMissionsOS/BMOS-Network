@@ -123,16 +123,6 @@
             flex: 1;
         }
 
-        .chapter-title {
-            font-size: 24px;
-            font-weight: 700;
-            text-align: center;
-            margin-bottom: 24px;
-            padding-bottom: 16px;
-            border-bottom: 2px solid var(--col-bg3, #333333);
-            color: var(--accent-color, #6179FF);
-        }
-
         .loading, .error {
             display: flex;
             flex-direction: column;
@@ -340,7 +330,7 @@
                 chapterSelect.value = currentChapter;
             }
 
-            let html = `<div class="chapter-title">${currentBook} ${currentChapter}</div>`;
+            let html = '';
             
             chapterData.forEach(verse => {
                 html += `
