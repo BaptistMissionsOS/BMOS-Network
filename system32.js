@@ -1072,6 +1072,9 @@ async function createFile(folderName, fileName, type, content, metadata = {}) {
         if (existingFile) {
             await updateFile(folderName, existingFile.id, { metadata, content: contentData, fileName: fileNameWithExtension, type });
             folder[fileNameWithExtension] = { id: existingFile.id, type, metadata };
+            if (ext === "app") {
+                await extractAndRegisterCapabilities(existingFile.id, contentData);
+            }
             return existingFile.id;
         } else {
             const uid = genUID();
