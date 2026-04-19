@@ -411,6 +411,10 @@
                             <span class="material-symbols-rounded">create_new_folder</span>
                             Create
                         </button>
+                        <button class="btn btn-sm btn-secondary" onclick="updateTreeName()">
+                            <span class="material-symbols-rounded">refresh</span>
+                            Update
+                        </button>
                     </div>
                     <small class="helper-text">Creates publish/app/My Awesome App/assets/* folders</small>
                 </div>
@@ -797,6 +801,18 @@
                 console.error('Create folder error:', err);
                 showStatus('appStatus', 'Error creating folders: ' + err.message, true);
             }
+        }
+
+        function updateTreeName() {
+            const name = document.getElementById('appName').value.trim();
+            if (!name) {
+                showStatus('appStatus', 'Please enter an app name first', true);
+                return;
+            }
+            const safeName = name.replace(/[^a-zA-Z0-9]/g, '');
+            document.getElementById('appRootName').textContent = safeName;
+            updateAssetTreePaths(safeName);
+            showStatus('appStatus', `Updated tree to "${safeName}"`);
         }
 
         function updateAssetTreePaths(appName) {
