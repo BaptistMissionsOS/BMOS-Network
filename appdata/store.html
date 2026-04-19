@@ -1984,24 +1984,37 @@
 			const bmosSection = document.querySelector('.catosection[data-cat="BMOS"] .applist');
 			bmosSection.innerHTML = '';
 
-			let bibleFile = null;
-			const possiblePaths = ["Apps/Bible.app", "Apps/KJV Bible.app", "Apps/KJVBible.app"];
-			
-			for (const path of possiblePaths) {
-				try {
-					bibleFile = await window.parent.getFileByPath(path);
-					if (bibleFile) break;
-				} catch (e) { }
+			if (!cachedLocalApps) {
+				await loadLocalApps();
 			}
+
+			let bibleFile = null;
 			
-			if (!bibleFile) {
+			try {
 				const appsFolder = await window.parent.getFileNamesByFolder("Apps");
-				if (appsFolder) {
+				console.log("BMOS: Apps folder contents:", appsFolder);
+				if (appsFolder && Array.isArray(appsFolder)) {
 					for (const item of appsFolder) {
-						if (item.name && item.name.toLowerCase().includes("bible")) {
+						console.log("BMOS: Checking item:", item);
+						const baseName = item.name ? item.name.replace(/\.app$/, '') : '';
+						if (baseName.toLowerCase().includes("bible") || baseName === "KJV Bible") {
 							bibleFile = item;
+							console.log("BMOS: Found Bible app in folder:", item);
 							break;
 						}
+					}
+				}
+			} catch (e) {
+				console.error("BMOS: Error scanning Apps folder:", e);
+			}
+			
+			if (!bibleFile && cachedLocalApps) {
+				console.log("BMOS: Checking cachedLocalApps:", cachedLocalApps);
+				for (const [tag, appData] of Object.entries(cachedLocalApps)) {
+					if (tag.toLowerCase().includes("bible")) {
+						console.log("BMOS: Found Bible in cachedLocalApps:", tag, appData);
+						bibleFile = { id: appData.id, name: tag.split('@')[0] + ".app" };
+						break;
 					}
 				}
 			}
