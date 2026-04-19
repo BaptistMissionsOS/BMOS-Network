@@ -1343,7 +1343,6 @@
 				document.body.classList.remove("initloadin");
 				await renderSections();
 				await populateApps(appData);
-				await addBMOSCategory();
 			}).catch(error => {
 				displayErrorMessage(0, error);
 				console.error('Error:', error);
@@ -1489,9 +1488,11 @@
 
 			allApps.forEach(details => {
 				const name = details.name;
-				const cat = details.cat || "Others";
+				let cat = details.cat || "Others";
 
-				if (name === "KJV Bible") return;
+				if (name === "KJV Bible") {
+					cat = "BMOS";
+				}
 
 				const appDiv = createAppDiv(name, details, vdevs, featured);
 				appDiv.setAttribute("data-tag", getAppTag(details));
@@ -1943,124 +1944,6 @@
 			</div>
 		`;
 				document.getElementById("defaultappslist").appendChild(appDiv);
-			}
-
-			await addBMOSCategory();
-		}
-
-		async function addBMOSCategory() {
-			const nav = document.getElementById("categorynav");
-			const sugapps = document.getElementById("sugapps");
-			
-			if (!document.querySelector('[data-filter="BMOS"]')) {
-				const btn = document.createElement("button");
-				btn.dataset.filter = "BMOS";
-				btn.innerText = "BMOS";
-				btn.addEventListener('click', () => {
-					document.querySelectorAll('#categorynav button').forEach(b => b.classList.remove('active-filter'));
-					btn.classList.add('active-filter');
-					document.querySelectorAll('.catosection').forEach(section => {
-						section.style.display = (section.dataset.cat === 'BMOS') ? 'block' : 'none';
-					});
-				});
-				nav.appendChild(btn);
-
-				const section = document.createElement("div");
-				section.className = "catosection";
-				section.dataset.cat = "BMOS";
-				section.style.display = "none";
-				
-				const title = document.createElement("h3");
-				title.innerText = "BMOS";
-				section.appendChild(title);
-				
-				const list = document.createElement("div");
-				list.className = "applist";
-				section.appendChild(list);
-				
-				sugapps.appendChild(section);
-			}
-
-			const bmosSection = document.querySelector('.catosection[data-cat="BMOS"] .applist');
-			bmosSection.innerHTML = '';
-
-			if (!cachedLocalApps) {
-				await loadLocalApps();
-			}
-
-			let bibleFile = null;
-			
-			const bibleTags = ["KJV Bible@BaptistMissionsOS", "KJV Bible@BMOS", "Bible@BaptistMissionsOS", "Bible@BMOS"];
-			
-			if (cachedLocalApps) {
-				console.log("BMOS: Checking cachedLocalApps:", cachedLocalApps);
-				for (const tag of bibleTags) {
-					if (cachedLocalApps[tag]) {
-						console.log("BMOS: Found Bible by exact tag:", tag, cachedLocalApps[tag]);
-						bibleFile = { id: cachedLocalApps[tag].id, name: tag.split('@')[0] + ".app" };
-						break;
-					}
-				}
-				
-				if (!bibleFile) {
-					for (const [tag, appData] of Object.entries(cachedLocalApps)) {
-						if (tag.toLowerCase().includes("bible")) {
-							console.log("BMOS: Found Bible in cachedLocalApps by partial match:", tag, appData);
-							bibleFile = { id: appData.id, name: tag.split('@')[0] + ".app" };
-							break;
-						}
-					}
-				}
-			}
-			
-			if (!bibleFile) {
-				try {
-					const appsFolder = await window.parent.getFileNamesByFolder("Apps");
-					console.log("BMOS: Apps folder contents:", appsFolder);
-					if (appsFolder && Array.isArray(appsFolder)) {
-						for (const item of appsFolder) {
-							console.log("BMOS: Checking item:", item);
-							const baseName = item.name ? item.name.replace(/\.app$/, '').toLowerCase() : '';
-							if (baseName.includes("bible") || baseName.includes("kjv")) {
-								bibleFile = item;
-								console.log("BMOS: Found Bible app in folder:", item);
-								break;
-							}
-						}
-					}
-				} catch (e) {
-					console.error("BMOS: Error scanning Apps folder:", e);
-				}
-			}
-			
-			if (bibleFile) {
-				try {
-					const appIcon = await window.parent.getAppIcon(0, bibleFile.id);
-					const appDiv = createAppDiv("KJV Bible", {
-						name: "KJV Bible",
-						by: "BMOS",
-						desc: "Read the King James Version of the Bible",
-						cat: "BMOS",
-						th: "#384AAE",
-						symbol: "book"
-					}, [], {});
-					appDiv.setAttribute("data-tag", "bible");
-					const iconEl = appDiv.querySelector('.appicon');
-					if (iconEl && appIcon) {
-						iconEl.innerHTML = appIcon;
-						iconEl.style.backgroundColor = "transparent";
-					}
-					appDiv.onclick = () => window.parent.openfile(bibleFile.id);
-					bmosSection.appendChild(appDiv);
-				} catch (err) {
-					console.error("Error loading BMOS Bible app:", err);
-				}
-			} else {
-				const noAppMsg = document.createElement("p");
-				noAppMsg.textContent = "Install KJV Bible from the store to see it here.";
-				noAppMsg.style.padding = "1rem";
-				noAppMsg.style.color = "var(--col-txt2)";
-				bmosSection.appendChild(noAppMsg);
 			}
 		}
 
