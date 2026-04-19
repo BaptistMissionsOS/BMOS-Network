@@ -1490,6 +1490,9 @@
 			allApps.forEach(details => {
 				const name = details.name;
 				const cat = details.cat || "Others";
+
+				if (name === "KJV Bible") return;
+
 				const appDiv = createAppDiv(name, details, vdevs, featured);
 				appDiv.setAttribute("data-tag", getAppTag(details));
 
