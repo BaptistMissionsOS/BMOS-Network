@@ -249,6 +249,18 @@
       "ldesc": "Read and search the King James Version of the Bible. Features book/chapter navigation and full-text search.",
       "symbol": "menu_book",
       "th": "#384AAE"
+    },
+    {
+      "name": "Publish",
+      "src": "apps/publish.html",
+      "by": "BaptistMissionsOS",
+      "qt": "Share with the world",
+      "desc": "Publish apps to store and websites to Hyper",
+      "cat": "BMOS",
+      "ver": "1",
+      "ldesc": "Publish apps to the NovaOS Store and deploy websites to the Hyper decentralized web network.",
+      "symbol": "publish",
+      "th": "#384AAE"
     }
   ]
 }

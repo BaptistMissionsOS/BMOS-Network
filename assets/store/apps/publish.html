@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Publish</title>
+    <meta name="nova-include" content="nova.css, material-symbols-rounded">
+    <meta name="permissions" content="fetch">
+    <meta name="nova-icon" content="<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24'><path fill='#384AAE' d='M12 4L10.6 5.4L16.2 11H4V13H16.2L10.6 18.6L12 20L20 12L12 4Z'/></svg>">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--col-bg1, #1a1a1a);
+            color: var(--col-txt1, #e0e0e0);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 1.5rem;
+        }
+
+        h1 {
+            margin: 0 0 1.5rem 0;
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--col-txt1, #e0e0e0);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        h1 .icon {
+            color: var(--accent-color, #6179FF);
+        }
+
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--col-bg3, #333);
+        }
+
+        .tab {
+            padding: 0.75rem 1.25rem;
+            background: transparent;
+            border: none;
+            color: var(--col-txt2, #999);
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            border-bottom: 2px solid transparent;
+        }
+
+        .tab:hover {
+            color: var(--col-txt1, #e0e0e0);
+        }
+
+        .tab.active {
+            color: var(--accent-color, #6179FF);
+            border-bottom-color: var(--accent-color, #6179FF);
+        }
+
+        .panel {
+            display: none;
+        }
+
+        .panel.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--col-txt2, #999);
+        }
+
+        input[type="text"],
+        input[type="url"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: var(--col-bg2, #2a2a2a);
+            border: 1px solid var(--col-bg3, #333);
+            border-radius: var(--siz-radius2, 8px);
+            color: var(--col-txt1, #e0e0e0);
+            font-size: 0.9rem;
+            transition: border-color 0.2s;
+        }
+
+        input[type="text"]:focus,
+        input[type="url"]:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--accent-color, #6179FF);
+        }
+
+        textarea {
+            min-height: 200px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            resize: vertical;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+
+        .file-input-wrapper input[type="file"] {
+            position: absolute;
+            left: -9999px;
+        }
+
+        .file-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            background: var(--col-bg2, #2a2a2a);
+            border: 1px solid var(--col-bg3, #333);
+            border-radius: var(--siz-radius2, 8px);
+            color: var(--col-txt1, #e0e0e0);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .file-btn:hover {
+            background: var(--col-bg3, #333);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background: var(--accent-color, #6179FF);
+            border: none;
+            border-radius: var(--siz-radius2, 8px);
+            color: white;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .btn-secondary {
+            background: var(--col-bg3, #333);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+        }
+
+        .info-box {
+            background: var(--col-bg2, #2a2a2a);
+            border-left: 3px solid var(--accent-color, #6179FF);
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0 var(--siz-radius2, 8px) var(--siz-radius2, 8px) 0;
+        }
+
+        .info-box h3 {
+            margin: 0 0 0.5rem 0;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .info-box p {
+            margin: 0;
+            font-size: 0.85rem;
+            color: var(--col-txt2, #999);
+        }
+
+        .status {
+            padding: 0.75rem 1rem;
+            border-radius: var(--siz-radius2, 8px);
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            display: none;
+        }
+
+        .status.success {
+            display: block;
+            background: rgba(95, 252, 166, 0.1);
+            border: 1px solid var(--col-good, #5FFCA6);
+            color: var(--col-good, #5FFCA6);
+        }
+
+        .status.error {
+            display: block;
+            background: rgba(255, 95, 95, 0.1);
+            border: 1px solid var(--col-bad, #FF5F5F);
+            color: var(--col-bad, #FF5F5F);
+        }
+
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        @media (max-width: 600px) {
+            .two-col {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            accent-color: var(--accent-color, #6179FF);
+        }
+
+        .input-with-btn {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .input-with-btn input {
+            flex: 1;
+        }
+
+        .btn-sm {
+            padding: 0.5rem 0.75rem;
+            font-size: 0.8rem;
+        }
+
+        .helper-text {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--col-txt2, #999);
+            margin-top: 0.25rem;
+        }
+
+        .source-files-section {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: var(--col-bg2, #2a2a2a);
+            border-radius: var(--siz-radius2, 8px);
+            border: 1px solid var(--col-bg3, #333);
+        }
+
+        .source-files-section h4 {
+            margin: 0 0 1rem 0;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tree-view {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .tree-view li {
+            padding: 0.25rem 0;
+        }
+
+        .tree-folder {
+            font-weight: 500;
+            color: var(--col-txt1, #e0e0e0);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.25rem;
+            border-radius: var(--siz-radius2, 4px);
+            transition: background 0.2s;
+        }
+
+        .tree-folder:hover {
+            background: var(--col-bg3, #333);
+        }
+
+        .tree-folder .toggle {
+            font-size: 1rem;
+            width: 1rem;
+            text-align: center;
+            color: var(--col-txt2, #999);
+        }
+
+        .tree-folder .icon {
+            color: var(--accent-color, #6179FF);
+        }
+
+        .tree-children {
+            list-style: none;
+            margin-left: 1.5rem;
+            padding: 0;
+            display: none;
+        }
+
+        .tree-children.expanded {
+            display: block;
+        }
+
+        .tree-file {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.85rem;
+            color: var(--col-txt2, #999);
+        }
+
+        .tree-file .icon {
+            color: var(--col-txt2, #999);
+        }
+
+        .upload-zone {
+            margin-top: 1rem;
+            padding: 1.5rem;
+            border: 2px dashed var(--col-bg3, #333);
+            border-radius: var(--siz-radius2, 8px);
+            text-align: center;
+            color: var(--col-txt2, #999);
+            transition: all 0.2s;
+        }
+
+        .upload-zone:hover,
+        .upload-zone.drag-over {
+            border-color: var(--accent-color, #6179FF);
+            background: var(--col-bg3, #333);
+        }
+
+        .upload-zone .material-symbols-rounded {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .folder-badge {
+            font-size: 0.7rem;
+            padding: 0.1rem 0.4rem;
+            background: var(--col-bg3, #333);
+            border-radius: 10px;
+            margin-left: auto;
+        }
+
+        .copy-path {
+            font-size: 0.75rem;
+            color: var(--accent-color, #6179FF);
+            cursor: pointer;
+            margin-left: 0.5rem;
+        }
+
+        .copy-path:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>
+            <span class="material-symbols-rounded icon">publish</span>
+            Publish
+        </h1>
+
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('app')">
+                <span class="material-symbols-rounded">apps</span> Publish App
+            </button>
+            <button class="tab" onclick="switchTab('web')">
+                <span class="material-symbols-rounded">language</span> Publish to Hyper
+            </button>
+        </div>
+
+        <div id="app-panel" class="panel active">
+            <div class="info-box">
+                <h3>App Store Publishing</h3>
+                <p>Submit your app to the NovaOS Store. Your app will be reviewed before being made public.</p>
+            </div>
+
+            <div class="two-col">
+                <div class="form-group">
+                    <label>App Name</label>
+                    <div class="input-with-btn">
+                        <input type="text" id="appName" placeholder="My Awesome App">
+                        <button class="btn btn-sm" onclick="createAppFolder()">
+                            <span class="material-symbols-rounded">create_new_folder</span>
+                            Create
+                        </button>
+                    </div>
+                    <small class="helper-text">Creates publish/app/My Awesome App/assets/* folders</small>
+                </div>
+                <div class="form-group">
+                    <label>Author</label>
+                    <input type="text" id="appAuthor" placeholder="Your Name">
+                </div>
+            </div>
+
+            <div class="two-col">
+                <div class="form-group">
+                    <label>Category</label>
+                    <select id="appCategory">
+                        <option value="tools">Tools</option>
+                        <option value="fun">Fun</option>
+                        <option value="art">Art</option>
+                        <option value="system">System</option>
+                        <option value="productivity">Productivity</option>
+                        <option value="BMOS">BMOS</option>
+                        <option value="others">Others</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Version</label>
+                    <input type="text" id="appVersion" placeholder="1.0">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Quick Tagline</label>
+                <input type="text" id="appTagline" placeholder="One line description...">
+            </div>
+
+            <div class="form-group">
+                <label>Full Description</label>
+                <input type="text" id="appDesc" placeholder="Detailed description of your app...">
+            </div>
+
+            <div class="form-group">
+                <label>App HTML Source Code</label>
+                <textarea id="appSource" placeholder="<!DOCTYPE html>..."></textarea>
+            </div>
+
+            <div class="source-files-section">
+                <h4>
+                    <span class="material-symbols-rounded">folder</span>
+                    Source Files
+                    <small style="margin-left: auto; font-weight: normal; color: var(--col-txt2);">Drop or upload files to asset folders</small>
+                </h4>
+                <ul class="tree-view" id="assetTree">
+                    <li>
+                        <div class="tree-folder" onclick="toggleFolder(this)">
+                            <span class="toggle">▼</span>
+                            <span class="material-symbols-rounded icon">folder</span>
+                            <span>assets</span>
+                        </div>
+                        <ul class="tree-children expanded">
+                            <li>
+                                <div class="tree-folder" onclick="toggleFolder(this)" data-path="publish/app/NAME/assets/css">
+                                    <span class="toggle">▶</span>
+                                    <span class="material-symbols-rounded icon">folder</span>
+                                    <span>css</span>
+                                    <span class="copy-path" onclick="copyPath(event, 'publish/app/NAME/assets/css')" title="Copy fetch path">copy path</span>
+                                </div>
+                                <ul class="tree-children" id="css-files"></ul>
+                            </li>
+                            <li>
+                                <div class="tree-folder" onclick="toggleFolder(this)" data-path="publish/app/NAME/assets/fonts">
+                                    <span class="toggle">▶</span>
+                                    <span class="material-symbols-rounded icon">folder</span>
+                                    <span>fonts</span>
+                                    <span class="copy-path" onclick="copyPath(event, 'publish/app/NAME/assets/fonts')" title="Copy fetch path">copy path</span>
+                                </div>
+                                <ul class="tree-children" id="fonts-files"></ul>
+                            </li>
+                            <li>
+                                <div class="tree-folder" onclick="toggleFolder(this)" data-path="publish/app/NAME/assets/images">
+                                    <span class="toggle">▶</span>
+                                    <span class="material-symbols-rounded icon">folder</span>
+                                    <span>images</span>
+                                    <span class="copy-path" onclick="copyPath(event, 'publish/app/NAME/assets/images')" title="Copy fetch path">copy path</span>
+                                </div>
+                                <ul class="tree-children" id="images-files"></ul>
+                            </li>
+                            <li>
+                                <div class="tree-folder" onclick="toggleFolder(this)" data-path="publish/app/NAME/assets/js">
+                                    <span class="toggle">▶</span>
+                                    <span class="material-symbols-rounded icon">folder</span>
+                                    <span>js</span>
+                                    <span class="copy-path" onclick="copyPath(event, 'publish/app/NAME/assets/js')" title="Copy fetch path">copy path</span>
+                                </div>
+                                <ul class="tree-children" id="js-files"></ul>
+                            </li>
+                            <li>
+                                <div class="tree-folder" onclick="toggleFolder(this)" data-path="publish/app/NAME/assets/json">
+                                    <span class="toggle">▶</span>
+                                    <span class="material-symbols-rounded icon">folder</span>
+                                    <span>json</span>
+                                    <span class="copy-path" onclick="copyPath(event, 'publish/app/NAME/assets/json')" title="Copy fetch path">copy path</span>
+                                </div>
+                                <ul class="tree-children" id="json-files"></ul>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+                <div class="upload-zone" id="uploadZone">
+                    <span class="material-symbols-rounded">cloud_upload</span>
+                    <p>Drop files here or click to upload</p>
+                    <input type="file" id="fileUpload" multiple style="display: none;" onchange="handleFileUpload(this)">
+                    <button class="btn btn-secondary" onclick="document.getElementById('fileUpload').click()">
+                        <span class="material-symbols-rounded">upload</span>
+                        Select Files
+                    </button>
+                </div>
+            </div>
+
+            <div class="checkbox-group">
+                <input type="checkbox" id="appPermissions">
+                <label for="appPermissions" style="margin: 0;">Requires unsandboxed permissions</label>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn" onclick="publishApp()">
+                    <span class="material-symbols-rounded">cloud_upload</span>
+                    Submit to Store
+                </button>
+                <button class="btn btn-secondary" onclick="previewApp()">
+                    <span class="material-symbols-rounded">preview</span>
+                    Preview
+                </button>
+            </div>
+
+            <div id="appStatus" class="status"></div>
+        </div>
+
+        <div id="web-panel" class="panel">
+            <div class="info-box">
+                <h3>Hyper Web Publishing</h3>
+                <p>Publish your website to the decentralized Hyper network. Your site will get a unique hyper:// URL.</p>
+            </div>
+
+            <div class="form-group">
+                <label>Site Name</label>
+                <input type="text" id="siteName" placeholder="My Website">
+            </div>
+
+            <div class="form-group">
+                <label>Site Description</label>
+                <input type="text" id="siteDesc" placeholder="What is this site about?">
+            </div>
+
+            <div class="form-group">
+                <label>HTML Content</label>
+                <textarea id="siteSource" placeholder="<!DOCTYPE html>..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Or Load from File</label>
+                <div class="file-input-wrapper">
+                    <input type="file" id="siteFile" accept=".html,.htm" onchange="loadSiteFile(this)">
+                    <label for="siteFile" class="file-btn">
+                        <span class="material-symbols-rounded">upload_file</span>
+                        Choose HTML File
+                    </label>
+                </div>
+            </div>
+
+            <div class="checkbox-group">
+                <input type="checkbox" id="sitePublic" checked>
+                <label for="sitePublic" style="margin: 0;">Make publicly discoverable</label>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn" onclick="publishSite()">
+                    <span class="material-symbols-rounded">language</span>
+                    Publish to Hyper
+                </button>
+                <button class="btn btn-secondary" onclick="previewSite()">
+                    <span class="material-symbols-rounded">preview</span>
+                    Preview
+                </button>
+            </div>
+
+            <div id="webStatus" class="status"></div>
+        </div>
+    </div>
+
+    <script>
+        function greenflag() {
+            const username = nova.CurrentUsername();
+            if (username) {
+                document.getElementById('appAuthor').value = username;
+            }
+        }
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+            
+            if (tab === 'app') {
+                document.querySelector('.tab:first-child').classList.add('active');
+                document.getElementById('app-panel').classList.add('active');
+            } else {
+                document.querySelector('.tab:last-child').classList.add('active');
+                document.getElementById('web-panel').classList.add('active');
+            }
+        }
+
+        function showStatus(id, message, isError = false) {
+            const status = document.getElementById(id);
+            status.textContent = message;
+            status.className = 'status ' + (isError ? 'error' : 'success');
+            setTimeout(() => {
+                status.className = 'status';
+            }, 5000);
+        }
+
+        async function publishApp() {
+            const name = document.getElementById('appName').value.trim();
+            const author = document.getElementById('appAuthor').value.trim();
+            const category = document.getElementById('appCategory').value;
+            const version = document.getElementById('appVersion').value.trim() || '1';
+            const tagline = document.getElementById('appTagline').value.trim();
+            const desc = document.getElementById('appDesc').value.trim();
+            const source = document.getElementById('appSource').value.trim();
+            const unsandboxed = document.getElementById('appPermissions').checked;
+
+            if (!name || !source) {
+                showStatus('appStatus', 'App name and source code are required', true);
+                return;
+            }
+
+            const appData = {
+                name: name,
+                src: 'apps/' + name.toLowerCase().replace(/\s+/g, '') + '.html',
+                by: author || 'Anonymous',
+                qt: tagline || name,
+                desc: desc || tagline || name,
+                cat: category,
+                ver: version,
+                ldesc: desc || tagline || name,
+                symbol: 'apps',
+                th: '#6179FF'
+            };
+
+            try {
+                const publishFolder = 'PublishedApps';
+                const safeName = name.replace(/[^a-zA-Z0-9]/g, '_');
+                
+                let finalSource = source;
+                if (!source.includes('nova-icon')) {
+                    finalSource = source.replace('<head>', `<head>\n    <meta name="nova-icon" content="<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24'><path fill='#6179FF' d='M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5'/></svg>">`);
+                }
+                if (unsandboxed && !source.includes('permissions')) {
+                    finalSource = finalSource.replace('<head>', `<head>\n    <meta name="permissions" content="unsandboxed">`);
+                }
+
+                await nova.createFile(publishFolder, safeName + '.app', 'app', finalSource, { 
+                    appData: appData,
+                    submitted: Date.now()
+                });
+
+                showStatus('appStatus', `App "${name}" submitted for review! Check PublishedApps folder.`);
+                
+                document.getElementById('appName').value = '';
+                document.getElementById('appSource').value = '';
+                document.getElementById('appTagline').value = '';
+                document.getElementById('appDesc').value = '';
+            } catch (err) {
+                console.error('Publish error:', err);
+                showStatus('appStatus', 'Failed to publish: ' + err.message, true);
+            }
+        }
+
+        async function publishSite() {
+            const name = document.getElementById('siteName').value.trim();
+            const desc = document.getElementById('siteDesc').value.trim();
+            const source = document.getElementById('siteSource').value.trim();
+            const isPublic = document.getElementById('sitePublic').checked;
+
+            if (!name || !source) {
+                showStatus('webStatus', 'Site name and content are required', true);
+                return;
+            }
+
+            try {
+                const hyperFolder = 'HyperSites';
+                const safeName = name.replace(/[^a-zA-Z0-9]/g, '_');
+                const hyperId = 'hyper://' + Array.from(safeName).reduce((a,b)=>{a=((a<<5)-a)+b.charCodeAt(0);return a&a},0).toString(16).substring(0, 12);
+                
+                const siteData = {
+                    name: name,
+                    url: hyperId,
+                    desc: desc,
+                    created: Date.now(),
+                    public: isPublic,
+                    content: source
+                };
+
+                await nova.createFile(hyperFolder, safeName + '.hyper', 'hyper', JSON.stringify(siteData), {
+                    hyperUrl: hyperId,
+                    public: isPublic
+                });
+
+                showStatus('webStatus', `Site "${name}" published! URL: ${hyperId}`);
+                
+                document.getElementById('siteName').value = '';
+                document.getElementById('siteDesc').value = '';
+                document.getElementById('siteSource').value = '';
+            } catch (err) {
+                console.error('Publish error:', err);
+                showStatus('webStatus', 'Failed to publish: ' + err.message, true);
+            }
+        }
+
+        function previewApp() {
+            const source = document.getElementById('appSource').value.trim();
+            if (!source) {
+                showStatus('appStatus', 'No source code to preview', true);
+                return;
+            }
+            const blob = new Blob([source], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            window.open(url, '_blank');
+        }
+
+        function previewSite() {
+            const source = document.getElementById('siteSource').value.trim();
+            if (!source) {
+                showStatus('webStatus', 'No content to preview', true);
+                return;
+            }
+            const blob = new Blob([source], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            window.open(url, '_blank');
+        }
+
+        function loadSiteFile(input) {
+            const file = input.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('siteSource').value = e.target.result;
+                if (!document.getElementById('siteName').value) {
+                    document.getElementById('siteName').value = file.name.replace(/\.html?$/, '');
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        async function createAppFolder() {
+            const name = document.getElementById('appName').value.trim();
+            if (!name) {
+                showStatus('appStatus', 'Please enter an app name first', true);
+                return;
+            }
+
+            const safeName = name.replace(/[^a-zA-Z0-9]/g, '');
+            const subfolders = ['css', 'fonts', 'images', 'js', 'json'];
+
+            try {
+                await nova.createFile('publish', 'app', 'folder', '');
+                await nova.createFile('publish/app', safeName, 'folder', '');
+                await nova.createFile(`publish/app/${safeName}`, 'assets', 'folder', '');
+
+                for (const sub of subfolders) {
+                    await nova.createFile(`publish/app/${safeName}/assets`, sub, 'folder', '');
+                }
+
+                updateAssetTreePaths(safeName);
+                showStatus('appStatus', `Created publish/app/${safeName}/assets/* folders`);
+            } catch (err) {
+                console.error('Create folder error:', err);
+                showStatus('appStatus', 'Error creating folders: ' + err.message, true);
+            }
+        }
+
+        function updateAssetTreePaths(appName) {
+            const folders = document.querySelectorAll('.tree-folder[data-path]');
+            folders.forEach(folder => {
+                const path = folder.dataset.path.replace('NAME', appName);
+                folder.dataset.path = path;
+                const copyBtn = folder.querySelector('.copy-path');
+                if (copyBtn) {
+                    copyBtn.onclick = (e) => copyPath(e, path);
+                }
+            });
+        }
+
+        function toggleFolder(folder) {
+            const children = folder.nextElementSibling;
+            if (children && children.classList.contains('tree-children')) {
+                children.classList.toggle('expanded');
+                const toggle = folder.querySelector('.toggle');
+                toggle.textContent = children.classList.contains('expanded') ? '▼' : '▶';
+            }
+        }
+
+        function copyPath(event, path) {
+            event.stopPropagation();
+            const appName = document.getElementById('appName').value.trim().replace(/[^a-zA-Z0-9]/g, '') || 'NAME';
+            const fullPath = path.replace('NAME', appName);
+            navigator.clipboard.writeText(fullPath).then(() => {
+                showStatus('appStatus', `Copied: ${fullPath}`);
+            });
+        }
+
+        async function handleFileUpload(input) {
+            const files = Array.from(input.files);
+            if (files.length === 0) return;
+
+            const appName = document.getElementById('appName').value.trim().replace(/[^a-zA-Z0-9]/g, '');
+            if (!appName) {
+                showStatus('appStatus', 'Please enter an app name first', true);
+                return;
+            }
+
+            const uploadCount = { success: 0, failed: 0 };
+
+            for (const file of files) {
+                const ext = file.name.split('.').pop().toLowerCase();
+                let subfolder = 'images';
+                if (['css', 'scss', 'less'].includes(ext)) subfolder = 'css';
+                else if (['js', 'mjs', 'ts'].includes(ext)) subfolder = 'js';
+                else if (['json'].includes(ext)) subfolder = 'json';
+                else if (['woff', 'woff2', 'ttf', 'otf', 'eot'].includes(ext)) subfolder = 'fonts';
+                else if (['png', 'jpg', 'jpeg', 'gif', 'svg', 'webp', 'ico'].includes(ext)) subfolder = 'images';
+
+                try {
+                    const content = await file.text();
+                    await nova.createFile(`publish/app/${appName}/assets/${subfolder}`, file.name, 'file', content);
+                    addFileToTree(subfolder, file.name);
+                    uploadCount.success++;
+                } catch (err) {
+                    console.error(`Failed to upload ${file.name}:`, err);
+                    uploadCount.failed++;
+                }
+            }
+
+            showStatus('appStatus', `Uploaded ${uploadCount.success} files${uploadCount.failed > 0 ? `, ${uploadCount.failed} failed` : ''}`);
+            input.value = '';
+        }
+
+        function addFileToTree(folder, filename) {
+            const container = document.getElementById(`${folder}-files`);
+            if (!container) return;
+
+            const li = document.createElement('li');
+            li.innerHTML = `
+                <div class="tree-file">
+                    <span class="material-symbols-rounded icon">description</span>
+                    <span>${filename}</span>
+                </div>
+            `;
+            container.appendChild(li);
+
+            const folderEl = container.previousElementSibling;
+            const toggle = folderEl.querySelector('.toggle');
+            if (!container.classList.contains('expanded')) {
+                container.classList.add('expanded');
+                toggle.textContent = '▼';
+            }
+        }
+
+        function getFileIcon(ext) {
+            const icons = {
+                css: 'css',
+                js: 'javascript',
+                json: 'data_object',
+                html: 'html',
+                svg: 'image',
+                png: 'image',
+                jpg: 'image',
+                jpeg: 'image',
+                gif: 'gif',
+                woff: 'font_download',
+                woff2: 'font_download',
+                ttf: 'font_download',
+                otf: 'font_download'
+            };
+            return icons[ext] || 'description';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof nova !== 'undefined') {
+                greenflag();
+            }
+
+            const uploadZone = document.getElementById('uploadZone');
+            if (uploadZone) {
+                uploadZone.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    uploadZone.classList.add('drag-over');
+                });
+
+                uploadZone.addEventListener('dragleave', () => {
+                    uploadZone.classList.remove('drag-over');
+                });
+
+                uploadZone.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    uploadZone.classList.remove('drag-over');
+                    const files = e.dataTransfer.files;
+                    if (files.length > 0) {
+                        const fileInput = document.getElementById('fileUpload');
+                        fileInput.files = files;
+                        handleFileUpload(fileInput);
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>
