@@ -462,56 +462,65 @@
                 </h4>
                 <ul class="tree-view" id="assetTree">
                     <li>
-                        <div class="tree-folder" onclick="toggleFolder(this)">
+                        <div class="tree-folder root-folder" onclick="toggleFolder(this)">
                             <span class="toggle">▼</span>
-                            <span class="material-symbols-rounded icon">folder</span>
-                            <span>assets</span>
+                            <span class="material-symbols-rounded icon">apps</span>
+                            <span id="appRootName">My Awesome App</span>
                         </div>
                         <ul class="tree-children expanded">
                             <li>
-                                <div class="tree-folder" onclick="toggleFolder(this)" data-path="publish/app/NAME/assets/css">
-                                    <span class="toggle">▶</span>
+                                <div class="tree-folder" onclick="toggleFolder(this)">
+                                    <span class="toggle">▼</span>
                                     <span class="material-symbols-rounded icon">folder</span>
-                                    <span>css</span>
-                                    <span class="copy-path" onclick="copyPath(event, 'publish/app/NAME/assets/css')" title="Copy fetch path">copy path</span>
+                                    <span>assets</span>
                                 </div>
-                                <ul class="tree-children" id="css-files"></ul>
-                            </li>
-                            <li>
-                                <div class="tree-folder" onclick="toggleFolder(this)" data-path="publish/app/NAME/assets/fonts">
-                                    <span class="toggle">▶</span>
-                                    <span class="material-symbols-rounded icon">folder</span>
-                                    <span>fonts</span>
-                                    <span class="copy-path" onclick="copyPath(event, 'publish/app/NAME/assets/fonts')" title="Copy fetch path">copy path</span>
-                                </div>
-                                <ul class="tree-children" id="fonts-files"></ul>
-                            </li>
-                            <li>
-                                <div class="tree-folder" onclick="toggleFolder(this)" data-path="publish/app/NAME/assets/images">
-                                    <span class="toggle">▶</span>
-                                    <span class="material-symbols-rounded icon">folder</span>
-                                    <span>images</span>
-                                    <span class="copy-path" onclick="copyPath(event, 'publish/app/NAME/assets/images')" title="Copy fetch path">copy path</span>
-                                </div>
-                                <ul class="tree-children" id="images-files"></ul>
-                            </li>
-                            <li>
-                                <div class="tree-folder" onclick="toggleFolder(this)" data-path="publish/app/NAME/assets/js">
-                                    <span class="toggle">▶</span>
-                                    <span class="material-symbols-rounded icon">folder</span>
-                                    <span>js</span>
-                                    <span class="copy-path" onclick="copyPath(event, 'publish/app/NAME/assets/js')" title="Copy fetch path">copy path</span>
-                                </div>
-                                <ul class="tree-children" id="js-files"></ul>
-                            </li>
-                            <li>
-                                <div class="tree-folder" onclick="toggleFolder(this)" data-path="publish/app/NAME/assets/json">
-                                    <span class="toggle">▶</span>
-                                    <span class="material-symbols-rounded icon">folder</span>
-                                    <span>json</span>
-                                    <span class="copy-path" onclick="copyPath(event, 'publish/app/NAME/assets/json')" title="Copy fetch path">copy path</span>
-                                </div>
-                                <ul class="tree-children" id="json-files"></ul>
+                                <ul class="tree-children expanded">
+                                    <li>
+                                        <div class="tree-folder" onclick="toggleFolder(this)" data-path="publish/app/NAME/assets/css">
+                                            <span class="toggle">▶</span>
+                                            <span class="material-symbols-rounded icon">folder</span>
+                                            <span>css</span>
+                                            <span class="copy-path" onclick="copyPath(event, 'publish/app/NAME/assets/css')" title="Copy fetch path">copy path</span>
+                                        </div>
+                                        <ul class="tree-children" id="css-files"></ul>
+                                    </li>
+                                    <li>
+                                        <div class="tree-folder" onclick="toggleFolder(this)" data-path="publish/app/NAME/assets/fonts">
+                                            <span class="toggle">▶</span>
+                                            <span class="material-symbols-rounded icon">folder</span>
+                                            <span>fonts</span>
+                                            <span class="copy-path" onclick="copyPath(event, 'publish/app/NAME/assets/fonts')" title="Copy fetch path">copy path</span>
+                                        </div>
+                                        <ul class="tree-children" id="fonts-files"></ul>
+                                    </li>
+                                    <li>
+                                        <div class="tree-folder" onclick="toggleFolder(this)" data-path="publish/app/NAME/assets/images">
+                                            <span class="toggle">▶</span>
+                                            <span class="material-symbols-rounded icon">folder</span>
+                                            <span>images</span>
+                                            <span class="copy-path" onclick="copyPath(event, 'publish/app/NAME/assets/images')" title="Copy fetch path">copy path</span>
+                                        </div>
+                                        <ul class="tree-children" id="images-files"></ul>
+                                    </li>
+                                    <li>
+                                        <div class="tree-folder" onclick="toggleFolder(this)" data-path="publish/app/NAME/assets/js">
+                                            <span class="toggle">▶</span>
+                                            <span class="material-symbols-rounded icon">folder</span>
+                                            <span>js</span>
+                                            <span class="copy-path" onclick="copyPath(event, 'publish/app/NAME/assets/js')" title="Copy fetch path">copy path</span>
+                                        </div>
+                                        <ul class="tree-children" id="js-files"></ul>
+                                    </li>
+                                    <li>
+                                        <div class="tree-folder" onclick="toggleFolder(this)" data-path="publish/app/NAME/assets/json">
+                                            <span class="toggle">▶</span>
+                                            <span class="material-symbols-rounded icon">folder</span>
+                                            <span>json</span>
+                                            <span class="copy-path" onclick="copyPath(event, 'publish/app/NAME/assets/json')" title="Copy fetch path">copy path</span>
+                                        </div>
+                                        <ul class="tree-children" id="json-files"></ul>
+                                    </li>
+                                </ul>
                             </li>
                         </ul>
                     </li>
@@ -781,6 +790,7 @@
                     await nova.createFile(`publish/app/${safeName}/assets`, sub, 'folder', '');
                 }
 
+                document.getElementById('appRootName').textContent = safeName;
                 updateAssetTreePaths(safeName);
                 showStatus('appStatus', `Created publish/app/${safeName}/assets/* folders`);
             } catch (err) {
