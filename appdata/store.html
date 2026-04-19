@@ -1990,32 +1990,46 @@
 
 			let bibleFile = null;
 			
-			try {
-				const appsFolder = await window.parent.getFileNamesByFolder("Apps");
-				console.log("BMOS: Apps folder contents:", appsFolder);
-				if (appsFolder && Array.isArray(appsFolder)) {
-					for (const item of appsFolder) {
-						console.log("BMOS: Checking item:", item);
-						const baseName = item.name ? item.name.replace(/\.app$/, '') : '';
-						if (baseName.toLowerCase().includes("bible") || baseName === "KJV Bible") {
-							bibleFile = item;
-							console.log("BMOS: Found Bible app in folder:", item);
+			const bibleTags = ["KJV Bible@BaptistMissionsOS", "KJV Bible@BMOS", "Bible@BaptistMissionsOS", "Bible@BMOS"];
+			
+			if (cachedLocalApps) {
+				console.log("BMOS: Checking cachedLocalApps:", cachedLocalApps);
+				for (const tag of bibleTags) {
+					if (cachedLocalApps[tag]) {
+						console.log("BMOS: Found Bible by exact tag:", tag, cachedLocalApps[tag]);
+						bibleFile = { id: cachedLocalApps[tag].id, name: tag.split('@')[0] + ".app" };
+						break;
+					}
+				}
+				
+				if (!bibleFile) {
+					for (const [tag, appData] of Object.entries(cachedLocalApps)) {
+						if (tag.toLowerCase().includes("bible")) {
+							console.log("BMOS: Found Bible in cachedLocalApps by partial match:", tag, appData);
+							bibleFile = { id: appData.id, name: tag.split('@')[0] + ".app" };
 							break;
 						}
 					}
 				}
-			} catch (e) {
-				console.error("BMOS: Error scanning Apps folder:", e);
 			}
 			
-			if (!bibleFile && cachedLocalApps) {
-				console.log("BMOS: Checking cachedLocalApps:", cachedLocalApps);
-				for (const [tag, appData] of Object.entries(cachedLocalApps)) {
-					if (tag.toLowerCase().includes("bible")) {
-						console.log("BMOS: Found Bible in cachedLocalApps:", tag, appData);
-						bibleFile = { id: appData.id, name: tag.split('@')[0] + ".app" };
-						break;
+			if (!bibleFile) {
+				try {
+					const appsFolder = await window.parent.getFileNamesByFolder("Apps");
+					console.log("BMOS: Apps folder contents:", appsFolder);
+					if (appsFolder && Array.isArray(appsFolder)) {
+						for (const item of appsFolder) {
+							console.log("BMOS: Checking item:", item);
+							const baseName = item.name ? item.name.replace(/\.app$/, '').toLowerCase() : '';
+							if (baseName.includes("bible") || baseName.includes("kjv")) {
+								bibleFile = item;
+								console.log("BMOS: Found Bible app in folder:", item);
+								break;
+							}
+						}
 					}
+				} catch (e) {
+					console.error("BMOS: Error scanning Apps folder:", e);
 				}
 			}
 			
