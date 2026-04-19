@@ -661,13 +661,16 @@ function putwinontop(x) {
 			return;
 	});
 
+	const winuid = x.replace('window', '');
+	const isMaximized = winds[winuid]?.visualState === "fullscreen";
+
 	if (Object.keys(winds).length > 1) {
 		const windValues = Object.values(winds).map(wind => Number(wind.zIndex) || 0);
 		const maxWindValue = Math.max(...windValues);
-		document.getElementById(x).style.zIndex = maxWindValue + 1;
+		document.getElementById(x).style.zIndex = isMaximized ? 100 : maxWindValue + 1;
 		normalizeZIndexes(x);
 	} else {
-		document.getElementById(x).style.zIndex = 0;
+		document.getElementById(x).style.zIndex = isMaximized ? 100 : 0;
 	}
 	if (typeof updateFocusedWindowBorder === "function") updateFocusedWindowBorder();
 }
@@ -680,7 +683,7 @@ function isWinOnTop(x) {
 
 function normalizeZIndexes(excludeWindowId = null) {
 	const windValues = Object.entries(winds)
-		.filter(([key]) => key !== excludeWindowId)
+		.filter(([key]) => key !== excludeWindowId && winds[key]?.visualState !== "fullscreen")
 		.map(([_, wind]) => Number(wind.zIndex) || 0);
 
 	const uniqueSorted = [...new Set(windValues)].sort((a, b) => a - b);
@@ -692,9 +695,10 @@ function normalizeZIndexes(excludeWindowId = null) {
 	}, {});
 
 	winds = Object.keys(winds).reduce((normalizedWinds, key) => {
+		const isMaximized = winds[key]?.visualState === "fullscreen";
 		normalizedWinds[key] = {
 			...winds[key],
-			zIndex: key === excludeWindowId
+			zIndex: key === excludeWindowId || isMaximized
 				? winds[key].zIndex
 				: zIndexMap[Number(winds[key].zIndex) || 0],
 		};
