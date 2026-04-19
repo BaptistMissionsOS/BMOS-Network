@@ -476,7 +476,7 @@ async function loadIframe(windowContent, windowLoader, loaderSpinner, cont, appi
 
     const iframe = document.createElement("iframe");
     if (!registry.perms?.includes("unsandboxed")) {
-        iframe.setAttribute("sandbox", "allow-scripts allow-modals");
+        iframe.setAttribute("sandbox", "allow-scripts allow-modals allow-same-origin");
         iframe.setAttribute("allow", "camera; microphone");
     }
     iframe.src = blobURL;
