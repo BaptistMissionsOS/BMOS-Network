@@ -1984,22 +1984,57 @@
 			const bmosSection = document.querySelector('.catosection[data-cat="BMOS"] .applist');
 			bmosSection.innerHTML = '';
 
-			try {
-				const bibleFile = await window.parent.getFileByPath("Apps/Bible.app");
-				if (bibleFile) {
+			let bibleFile = null;
+			const possiblePaths = ["Apps/Bible.app", "Apps/KJV Bible.app", "Apps/KJVBible.app"];
+			
+			for (const path of possiblePaths) {
+				try {
+					bibleFile = await window.parent.getFileByPath(path);
+					if (bibleFile) break;
+				} catch (e) { }
+			}
+			
+			if (!bibleFile) {
+				const appsFolder = await window.parent.getFileNamesByFolder("Apps");
+				if (appsFolder) {
+					for (const item of appsFolder) {
+						if (item.name && item.name.toLowerCase().includes("bible")) {
+							bibleFile = item;
+							break;
+						}
+					}
+				}
+			}
+			
+			if (bibleFile) {
+				try {
 					const appIcon = await window.parent.getAppIcon(0, bibleFile.id);
 					const appDiv = createAppDiv("KJV Bible", {
 						name: "KJV Bible",
 						by: "BMOS",
 						desc: "Read the King James Version of the Bible",
-						cat: "BMOS"
+						cat: "BMOS",
+						th: "#384AAE",
+						symbol: "book"
 					}, [], {});
 					appDiv.setAttribute("data-tag", "bible");
-					appDiv.querySelector('.app_icon').innerHTML = appIcon;
+					const iconEl = appDiv.querySelector('.appicon');
+					if (iconEl && appIcon) {
+						iconEl.innerHTML = appIcon;
+						iconEl.style.backgroundColor = "transparent";
+					}
 					appDiv.onclick = () => window.parent.openfile(bibleFile.id);
 					bmosSection.appendChild(appDiv);
+				} catch (err) {
+					console.error("Error loading BMOS Bible app:", err);
 				}
-			} catch (e) { }
+			} else {
+				const noAppMsg = document.createElement("p");
+				noAppMsg.textContent = "Install KJV Bible from the store to see it here.";
+				noAppMsg.style.padding = "1rem";
+				noAppMsg.style.color = "var(--col-txt2)";
+				bmosSection.appendChild(noAppMsg);
+			}
 		}
 
 		async function upddefap(tag, el) {
