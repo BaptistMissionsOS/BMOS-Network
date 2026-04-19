@@ -1343,6 +1343,7 @@
 				document.body.classList.remove("initloadin");
 				await renderSections();
 				await populateApps(appData);
+				await addBMOSCategory();
 			}).catch(error => {
 				displayErrorMessage(0, error);
 				console.error('Error:', error);
@@ -1940,6 +1941,62 @@
 		`;
 				document.getElementById("defaultappslist").appendChild(appDiv);
 			}
+
+			await addBMOSCategory();
+		}
+
+		async function addBMOSCategory() {
+			const nav = document.getElementById("categorynav");
+			const sugapps = document.getElementById("sugapps");
+			
+			if (!document.querySelector('[data-filter="BMOS"]')) {
+				const btn = document.createElement("button");
+				btn.dataset.filter = "BMOS";
+				btn.innerText = "BMOS";
+				btn.addEventListener('click', () => {
+					document.querySelectorAll('#categorynav button').forEach(b => b.classList.remove('active-filter'));
+					btn.classList.add('active-filter');
+					document.querySelectorAll('.catosection').forEach(section => {
+						section.style.display = (section.dataset.cat === 'BMOS') ? 'block' : 'none';
+					});
+				});
+				nav.appendChild(btn);
+
+				const section = document.createElement("div");
+				section.className = "catosection";
+				section.dataset.cat = "BMOS";
+				section.style.display = "none";
+				
+				const title = document.createElement("h3");
+				title.innerText = "BMOS";
+				section.appendChild(title);
+				
+				const list = document.createElement("div");
+				list.className = "applist";
+				section.appendChild(list);
+				
+				sugapps.appendChild(section);
+			}
+
+			const bmosSection = document.querySelector('.catosection[data-cat="BMOS"] .applist');
+			bmosSection.innerHTML = '';
+
+			try {
+				const bibleFile = await window.parent.getFileByPath("Apps/Bible.app");
+				if (bibleFile) {
+					const appIcon = await window.parent.getAppIcon(0, bibleFile.id);
+					const appDiv = createAppDiv("KJV Bible", {
+						name: "KJV Bible",
+						by: "BMOS",
+						desc: "Read the King James Version of the Bible",
+						cat: "BMOS"
+					}, [], {});
+					appDiv.setAttribute("data-tag", "bible");
+					appDiv.querySelector('.app_icon').innerHTML = appIcon;
+					appDiv.onclick = () => window.parent.openfile(bibleFile.id);
+					bmosSection.appendChild(appDiv);
+				}
+			} catch (e) { }
 		}
 
 		async function upddefap(tag, el) {
