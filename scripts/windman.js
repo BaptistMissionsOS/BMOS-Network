@@ -284,6 +284,7 @@ function resetWindow(id) {
     const sizeStyles = calculateWindowSize(aspectRatio);
 
     Object.assign(x.style, sizeStyles);
+    x.style.zIndex = "";
     x.getElementsByClassName("flbtn")[0].innerHTML = "open_in_full";
 
     winds[id]["visualState"] = "free";
@@ -299,9 +300,10 @@ function maximizeWindow(id) {
    suppressNudge = true;
 x.classList.add("snapping");
     x.style.width = "calc(100% - 0px)";
-    x.style.height = "calc(100% - " + navheight + "px)";
+    x.style.height = "calc(100% - 0px)";
     x.style.top = "0";
     x.style.left = "0";
+    x.style.zIndex = "100";
     x.getElementsByClassName("flbtn")[0].innerHTML = "close_fullscreen";
 
     winds[id]["visualState"] = "fullscreen";
